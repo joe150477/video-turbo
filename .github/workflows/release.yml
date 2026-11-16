@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build-mac:
-    runs-on: macos-14 # Apple Silicon (arm64)
+    runs-on: macos-latest # runner de macOS disponible para el repo
     steps:
       - name: Descargar el código
         uses: actions/checkout@v4

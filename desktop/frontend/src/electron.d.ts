@@ -5,6 +5,7 @@ export interface DesktopApi {
   getBackendPort(): Promise<number>
   openExternalLink(url: string): void
   quitApp(): void
+  applyUpdate(downloadUrl: string): Promise<{ ok: boolean; message_es: string }>
 }
 
 declare global {

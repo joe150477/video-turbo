@@ -17,4 +17,6 @@ contextBridge.exposeInMainWorld('desktopApi', {
   quitApp: (): void => {
     ipcRenderer.invoke('app:quit')
   },
+  applyUpdate: (downloadUrl: string): Promise<{ ok: boolean; message_es: string }> =>
+    ipcRenderer.invoke('update:apply', downloadUrl),
 })

@@ -46,6 +46,8 @@ export class BackendManager {
       MPT_PORT: String(port),
       MPT_HOST: '127.0.0.1',
       MPT_USER_DATA_DIR: app.getPath('userData'),
+      // So the backend can tell GitHub's latest release from the running app.
+      MPT_APP_VERSION: app.getVersion(),
     }
 
     if (app.isPackaged) {

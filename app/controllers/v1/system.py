@@ -356,11 +356,9 @@ def delete_material(request: Request, filename: str):
     return utils.get_response(200, {"removed": True})
 
 
-@router.get("/system/updates/check", summary="Check for an upstream project update")
+@router.get("/system/updates/check", summary="Check for a newer published app version")
 def check_updates(request: Request):
+    # Applying the update (downloading the .dmg and swapping the running
+    # /Applications bundle) is done by the Electron shell, not here — this
+    # endpoint only reports whether a newer version exists and its download URL.
     return utils.get_response(200, updates.check_for_updates())
-
-
-@router.post("/system/updates/apply", summary="Apply the upstream update (with auto-rollback)")
-def apply_update(request: Request):
-    return utils.get_response(200, updates.apply_update())

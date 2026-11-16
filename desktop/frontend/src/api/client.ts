@@ -12,7 +12,6 @@ import type {
   MaterialProviderId,
   MaterialSettings,
   TaskStatus,
-  UpdateApplyResult,
   UpdateCheckResult,
   VoiceGroupDto,
   VoicePreviewResult,
@@ -115,7 +114,6 @@ export const api = {
   getTask: (taskId: string) => get<TaskStatus>(`/tasks/${taskId}`),
 
   checkForUpdates: () => get<UpdateCheckResult>('/system/updates/check'),
-  applyUpdate: () => post<UpdateApplyResult>('/system/updates/apply', {}),
 
   getBrandSettings: () => get<BrandSettings>('/system/settings/brand'),
   saveBrandSettings: (payload: Partial<BrandSettings>) =>

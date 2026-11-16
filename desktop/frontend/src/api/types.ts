@@ -100,14 +100,12 @@ export interface TaskStatus {
 
 export interface UpdateCheckResult {
   update_available: boolean
-  can_auto_apply?: boolean
-  local_commit?: string
-  remote_commit?: string
-  behind_by?: number
-  changes?: string[]
-  compatible?: boolean
-  affected_custom_files?: string[]
   message_es: string
+  version?: string
+  installed_version?: string
+  latest_version?: string
+  notes?: string
+  download_url?: string
 }
 
 export interface UpdateApplyResult {

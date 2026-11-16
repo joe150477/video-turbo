@@ -1,0 +1,45 @@
+{
+  "name": "moneyprinterturbo-desktop",
+  "productName": "MoneyPrinterTurbo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "MoneyPrinterTurbo desktop app for non-technical users",
+  "main": "dist/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "npm run build && electron .",
+    "dist:mac": "npm run build && electron-builder --mac"
+  },
+  "dependencies": {
+    "tree-kill": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "typescript": "~5.7.3"
+  },
+  "build": {
+    "appId": "com.moneyprinterturbo.desktop",
+    "productName": "MoneyPrinterTurbo",
+    "directories": {
+      "output": "release",
+      "buildResources": "resources"
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "extraResources": [
+      { "from": "../build/dist/moneyprinterturbo-backend", "to": "backend" },
+      { "from": "../frontend/dist", "to": "frontend" }
+    ],
+    "mac": {
+      "target": ["dmg", "zip"],
+      "category": "public.app-category.video",
+      "identity": null
+    }
+  }
+}

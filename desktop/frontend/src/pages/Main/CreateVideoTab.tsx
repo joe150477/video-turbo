@@ -23,6 +23,9 @@ export function CreateVideoTab() {
   const [keywords, setKeywords] = useState('')
   const [duration, setDuration] = useState<VideoDuration>(30)
   const [format, setFormat] = useState<VideoFormat>('tiktok')
+  // 'auto' = tus fotos/clips o archivo (comportamiento de siempre).
+  // 'ai'   = inventar imágenes nuevas con IA para cada frase (opción extra).
+  const [visualSource, setVisualSource] = useState<'auto' | 'ai'>('auto')
   const [taskId, setTaskId] = useState<string | null>(null)
   const [starting, setStarting] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
@@ -70,7 +73,11 @@ export function CreateVideoTab() {
 
       // Build from the user's own footage when they have a folder configured or
       // explicitly turned on "use my own materials" and some exist.
+      // AI-generated images are an explicit choice that overrides own/stock
+      // footage (the pipeline invents a still per script beat).
+      const aiImages = visualSource === 'ai'
       const useOwn =
+        !aiImages &&
         (Boolean(brandSettings?.materials_folder) || Boolean(brandSettings?.use_own_materials)) &&
         materials.length > 0
 
@@ -78,7 +85,7 @@ export function CreateVideoTab() {
         video_subject: subject,
         video_aspect: FORMAT_TO_ASPECT[format],
         paragraph_number: DURATION_TO_PARAGRAPHS[duration],
-        video_source: useOwn ? 'local' : stockSource,
+        video_source: aiImages ? 'ai_image' : useOwn ? 'local' : stockSource,
         voice_name: generalSettings?.voice_name ?? '',
         // Brand context is applied by the backend on both script paths (the
         // persuasive chain reads it internally; the classic path falls back to
@@ -187,6 +194,39 @@ export function CreateVideoTab() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div>
+        <p className="mb-1 text-sm font-medium">Imágenes del vídeo</p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setVisualSource('auto')}
+            className={`rounded-lg border px-4 py-2 text-sm ${
+              visualSource === 'auto'
+                ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
+                : 'border-[var(--color-border)]'
+            }`}
+          >
+            Automático
+          </button>
+          <button
+            type="button"
+            onClick={() => setVisualSource('ai')}
+            className={`rounded-lg border px-4 py-2 text-sm ${
+              visualSource === 'ai'
+                ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
+                : 'border-[var(--color-border)]'
+            }`}
+          >
+            Generadas con IA ✨
+          </button>
+        </div>
+        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+          {visualSource === 'ai'
+            ? 'La IA inventa una imagen nueva para cada frase del guion (gratis, en la nube). Tarda un poco más y no usa tus fotos ni archivo.'
+            : 'Usa tus propias fotos/clips o imágenes de archivo, según tu configuración.'}
+        </p>
       </div>
 
       {startError && <ErrorBanner message={startError} onRetry={handleGenerate} />}

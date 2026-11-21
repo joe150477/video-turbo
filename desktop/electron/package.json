@@ -2,7 +2,7 @@
   "name": "moneyprinterturbo-desktop",
   "productName": "MoneyPrinterTurbo",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MoneyPrinterTurbo desktop app for non-technical users",
   "main": "dist/main.js",
   "type": "commonjs",

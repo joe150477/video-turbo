@@ -7,8 +7,9 @@ from loguru import logger
 
 from app.config import config
 from app.models import const
-from app.models.schema import VideoConcatMode, VideoParams
+from app.models.schema import MaterialInfo, VideoConcatMode, VideoParams
 from app.services import llm, material, subtitle, twelvelabs, video, voice, upload_post
+from app.services import image_gen
 from app.services import script_studio, setup
 from app.services import state as sm
 from app.utils import error_messages, file_security, utils
@@ -349,6 +350,38 @@ def get_video_materials(task_id, params, video_terms, audio_duration):
         if not local_paths:
             _mark_failed(task_id, "materials")
             logger.error("no valid materials found, please check the materials and try again.")
+            return None
+        return local_paths
+    elif params.video_source == "ai_image":
+        # Extra visual source: invent images with AI (default: free Pollinations
+        # in the cloud, so the Mac stays cool). The stills then flow through the
+        # same preprocessing as the user's own photos (Ken Burns + enhancement).
+        logger.info("\n\n## generating AI images")
+        image_paths = image_gen.generate_ai_images(
+            task_id=task_id,
+            search_terms=video_terms,
+            video_aspect=params.video_aspect,
+            audio_duration=audio_duration,
+            max_clip_duration=params.video_clip_duration,
+            video_count=params.video_count,
+        )
+        if not image_paths:
+            _mark_failed(task_id, "materials")
+            logger.error("no AI images were generated (image provider unavailable?)")
+            return None
+        materials = video.preprocess_video(
+            materials=[MaterialInfo(provider="ai_image", url=p, duration=0) for p in image_paths],
+            clip_duration=params.video_clip_duration,
+        )
+        local_paths = [m.url for m in materials] if materials else []
+        # Let the user mix AI images with stock footage too, if they asked for it.
+        if params.supplement_with_stock:
+            local_paths = local_paths + _download_stock_fill(
+                task_id, params, video_terms, audio_duration, params.fallback_source
+            )
+        if not local_paths:
+            _mark_failed(task_id, "materials")
+            logger.error("AI images were generated but none survived preprocessing.")
             return None
         return local_paths
     else:

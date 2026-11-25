@@ -25,6 +25,11 @@ Fork de MoneyPrinterTurbo: app de escritorio macOS que crea videos cortos (guion
 - Fase grande siguiente: modo ASISTENTE conversacional (chat que pregunta/razona + enrutador multi-modelo por cuota, estilo opencode) = el "Director General". Luego fuentes de imágenes (Unsplash/Wikimedia + legalidad) + campo de guion/storyboard.
 - Defecto: `CreateVideoTab` mandaba brand_context como `video_script_prompt` y saltaba el cerebro persuasivo; corregido en frontend, verificar en próxima build.
 
+## Fixes recientes
+- v1.0.2 build VERDE e INSTALADA por Claude en `/Applications/MoneyPrinterTurbo.app` (ditto+`xattr -cr`). dmg en `~/Downloads/VIDEO-TURBO-v1.0.2/`. Trae updater + imágenes IA.
+- Groq (2026-11-25): retiraron `llama-3.3-70b-versatile` (404 model_not_found en "Probar conexión"). Default cambiado a `openai/gpt-oss-120b` (reemplazo oficial Groq, gratis) en `llm.py` + `config.example.toml` + config.toml del usuario (y en memoria vía POST /api/v1/system/settings/llm). Clave del usuario SÍ es válida. Backend en vivo 127.0.0.1:8081, prefijo `/api/v1`. `config.app` se carga 1 vez al iniciar (cambios en config.toml exigen reinicio o save endpoint).
+- ⚠️ iCloud volvió a evictar ESTADO.md (quedó dataless → `git checkout` lo restauró). Ver `git-icloud-duplicados`.
+
 ## Reglas / riesgos
 - La IA que genera los guiones NO es Claude Code ni gasta esos tokens: usa el proveedor LLM que el usuario configuró (hoy = Groq, gratis). Opciones gratis/local: Groq, Ollama, Gemini, OpenRouter :free, DeepSeek, Qwen. MimikaStudio (voz) = local gratis; Fish = centavos.
 - Probar de verdad antes de declarar hecho; decir qué no se pudo probar. Botón `open` por entregable + carpeta.

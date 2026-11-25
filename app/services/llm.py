@@ -242,7 +242,9 @@ def _generate_response(prompt: str, provider_override: str = "") -> str:
                 api_key = config.app.get("groq_api_key")
                 model_name = config.app.get("groq_model_name")
                 if not model_name:
-                    model_name = "llama-3.3-70b-versatile"
+                    # Groq retired llama-3.3-70b-versatile (2026-08-16); this is
+                    # their recommended, free replacement.
+                    model_name = "openai/gpt-oss-120b"
                 base_url = config.app.get("groq_base_url", "")
                 if not base_url:
                     base_url = "https://api.groq.com/openai/v1"
